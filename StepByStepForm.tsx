@@ -5,9 +5,12 @@ const StepByStepForm: React.FC = ({ onSubmit }: any) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState({});
     const numberOfSteps = 2;
+    const [isStepValid, setIsStepValid] = useState(false);
 
     const handleNextStep = () => {
-        setCurrentStep((prevStep) => prevStep + 1);
+        if (isStepValid) {
+            setCurrentStep((prevStep) => prevStep + 1);
+        }
     };
 
     const handlePreviousStep = () => {
@@ -26,6 +29,13 @@ const StepByStepForm: React.FC = ({ onSubmit }: any) => {
         }));
     };
 
+    const validateStep = (stepData: any) => {
+        const isStepDataValid = Object.values(stepData).every(
+            (value) => value !== null && value !== ""
+        );
+        setIsStepValid(isStepDataValid);
+    };
+
     return (
         <div>
             <h1>Step {currentStep + 1}</h1>
@@ -33,17 +43,26 @@ const StepByStepForm: React.FC = ({ onSubmit }: any) => {
                 <div
                     className={`form-step ${currentStep === 0 ? "active" : ""}`}
                 >
-                    <Step1Form onChange={handleFormChange} />
+                    <Step1Form
+                        onChange={handleFormChange}
+                        onValidate={validateStep}
+                    />
                 </div>
                 <div
                     className={`form-step ${currentStep === 1 ? "active" : ""}`}
                 >
-                    <Step2Form onChange={handleFormChange} />
+                    <Step2Form
+                        onChange={handleFormChange}
+                        onValidate={validateStep}
+                    />
                 </div>
                 <div
                     className={`form-step ${currentStep === 2 ? "active" : ""}`}
                 >
-                    <Step3Form onChange={handleFormChange} />
+                    <Step3Form
+                        onChange={handleFormChange}
+                        onValidate={validateStep}
+                    />
                 </div>
             </div>
             <button onClick={handlePreviousStep} disabled={currentStep === 0}>
@@ -54,7 +73,7 @@ const StepByStepForm: React.FC = ({ onSubmit }: any) => {
             ) : (
                 <button
                     onClick={handleNextStep}
-                    disabled={currentStep === numberOfSteps - 1}
+                    disabled={currentStep === numberOfSteps - 1 || !isStepValid}
                 >
                     Next
                 </button>
@@ -64,12 +83,14 @@ const StepByStepForm: React.FC = ({ onSubmit }: any) => {
 };
 
 // Separate sub-components for each form step
-const Step1Form: React.FC<{ onChange: (data: any) => void }> = ({
-    onChange,
-}) => {
+const Step1Form: React.FC<{
+    onChange: (data: any) => void;
+    onValidate: (data: any) => void;
+}> = ({ onChange, onValidate }) => {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         onChange({ [name]: value });
+        onValidate({ [name]: value });
     };
 
     return (
@@ -79,12 +100,14 @@ const Step1Form: React.FC<{ onChange: (data: any) => void }> = ({
     );
 };
 
-const Step2Form: React.FC<{ onChange: (data: any) => void }> = ({
-    onChange,
-}) => {
+const Step2Form: React.FC<{
+    onChange: (data: any) => void;
+    onValidate: (data: any) => void;
+}> = ({ onChange, onValidate }) => {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         onChange({ [name]: value });
+        onValidate({ [name]: value });
     };
 
     return (
@@ -94,12 +117,14 @@ const Step2Form: React.FC<{ onChange: (data: any) => void }> = ({
     );
 };
 
-const Step3Form: React.FC<{ onChange: (data: any) => void }> = ({
-    onChange,
-}) => {
+const Step3Form: React.FC<{
+    onChange: (data: any) => void;
+    onValidate: (data: any) => void;
+}> = ({ onChange, onValidate }) => {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         onChange({ [name]: value });
+        onValidate({ [name]: value });
     };
 
     return (
